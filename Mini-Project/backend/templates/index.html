@@ -12,11 +12,9 @@
 </head>
 <body class="dark" id="body">
 
-<!-- Animated Background Canvas -->
 <canvas id="particles"></canvas>
 <div class="bg-glow"></div>
 
-<!-- Mode Selection Modal -->
 <div class="mode-overlay" id="modeOverlay" style="display:none;">
     <div class="mode-modal">
         <div class="mode-modal-brand">
@@ -77,7 +75,6 @@
     </div>
 </div>
 
-<!-- Navbar -->
 <header class="navbar" id="navbar">
     <div class="nav-brand">
         <div class="logo-icon" onclick="window.location.href='/'">
@@ -162,7 +159,6 @@
     </div>
 </header>
 
-<!-- Profile Dropdown Menu -->
 <div class="profile-dropdown" id="profileDropdown" style="display:none">
     <a href="/" class="dropdown-item">
         <span class="dropdown-icon">🏠</span> Back to Dashboard
@@ -176,14 +172,11 @@
     </button>
 </div>
 
-<!-- Main Layout -->
-
 <main class="app-container" id="appContainer">
 
     <!-- Left: Editor Panel -->
     <section class="editor-section" id="editorSection">
 
-        <!-- File Tabs (Multi-file mode only) -->
         <div class="file-tabs-bar" id="fileTabsBar" style="display:none;">
             <div class="file-tabs-scroll" id="fileTabsScroll"></div>
             <button class="add-file-btn" id="addFileBtn" onclick="addNewFile()" title="Add new file">
@@ -195,7 +188,6 @@
             </button>
         </div>
 
-        <!-- Editor Panel Header -->
         <div class="panel-header">
             <div class="panel-title">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -234,11 +226,9 @@
         <div id="editor" class="monaco-editor-container"></div>
     </section>
 
-    <!-- Right: Interactive Terminal -->
     <aside class="io-section" id="ioSection">
         <div class="terminal-panel" id="terminalPanel">
 
-            <!-- Terminal Header -->
             <div class="panel-header">
                 <div class="panel-title">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -259,7 +249,6 @@
                 </div>
             </div>
 
-            <!-- Terminal Output Area -->
             <div class="terminal-output" id="terminalOutput">
                 <div class="terminal-placeholder" id="terminalPlaceholder">
                     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.25">
@@ -271,7 +260,6 @@
                 </div>
             </div>
 
-            <!-- Terminal Input Bar (shown when process is running) -->
             <div class="terminal-input-bar" id="terminalInputBar">
                 <span class="terminal-prompt">$</span>
                 <input
@@ -289,7 +277,6 @@
 
 </main>
 
-<!-- Rename File Modal -->
 <div class="rename-overlay" id="renameOverlay" style="display:none;">
     <div class="rename-modal">
         <h3>Rename File</h3>
@@ -301,7 +288,6 @@
     </div>
 </div>
 
-<!-- Code Viewer Modal -->
 <div class="code-viewer-overlay" id="codeViewerOverlay" style="display:none;">
     <div class="code-viewer-modal">
         <div class="code-viewer-header">
@@ -317,7 +303,6 @@
     </div>
 </div>
 
-<!-- Login / Register Modal -->
 <div class="auth-overlay" id="authOverlay" style="display:none;">
     <div class="auth-card">
         <h2 id="authTitle">Sign In</h2>
@@ -333,7 +318,6 @@
     </div>
 </div>
 
-<!-- History Modal -->
 <div class="history-overlay" id="historyOverlay" style="display:none;">
     <div class="history-card">
         <div class="history-header">
@@ -344,7 +328,6 @@
     </div>
 </div>
 
-<!-- Loading Overlay -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-card">
         <div class="spinner-wrap">
@@ -356,7 +339,6 @@
     </div>
 </div>
 
-<!-- Command Palette (Ctrl+K) -->
 <div class="palette-overlay" id="paletteOverlay" style="display:none;">
     <div class="palette-modal">
         <div class="palette-search">
@@ -368,13 +350,10 @@
             <span class="palette-shortcut">ESC</span>
         </div>
         <div class="palette-results" id="paletteResults">
-            <!-- Populated via JS -->
         </div>
     </div>
 </div>
 
-
-<!-- Edit Profile Modal -->
 <div class="auth-overlay" id="profileOverlay" style="display:none;">
     <div class="auth-card">
         <h2 id="profileTitle">Edit Profile</h2>
@@ -387,12 +366,9 @@
     </div>
 </div>
 
-<!-- Toast Notification -->
 <div class="toast" id="toast"></div>
 
-<!-- Footer -->
-<footer class="app-footer">
-    <span>Developed by <strong>Syed, Akshay, Akshat, Armaan, Ishaan</strong></span>
+<footer class="app-footer"
     <span class="footer-sep">·</span>
     <span>Web-Based Compiler Platform</span>
 </footer>

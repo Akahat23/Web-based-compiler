@@ -24,11 +24,9 @@ _sessions     = {}  # token -> username
 COMPILE_TIMEOUT = 30
 EXEC_TIMEOUT    = 60   # allow time for interactive programs
 
-# sid -> { 'process': Popen, 'sandbox': str }
 _active = {}
 _lock   = threading.Lock()
 
-# ─── Python command cache ──────────────────────────────────────────────────────
 _py_cmd = None
 def get_python_cmd():
     global _py_cmd
@@ -45,7 +43,6 @@ def get_python_cmd():
     _py_cmd = "py"
     return "py"
 
-# ─── GCC/G++ resolver (prefers modern WinLibs over old MinGW in PATH) ─────────
 _WINLIBS_BIN = os.path.join(
     os.environ.get("LOCALAPPDATA", ""),
     "Microsoft", "WinGet", "Packages",
@@ -54,13 +51,11 @@ _WINLIBS_BIN = os.path.join(
 )
 
 def _resolve_compiler(name):
-    """Return full path to compiler, preferring WinLibs GCC 15 on Windows."""
     candidate = os.path.join(_WINLIBS_BIN, name + ".exe")
     if sys.platform == "win32" and os.path.isfile(candidate):
         return candidate
     return name  # fall back to PATH
 
-# ─── Popen helper ─────────────────────────────────────────────────────────────
 def _popen(cmd, cwd):
     kwargs = dict(
         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -71,7 +66,6 @@ def _popen(cmd, cwd):
         kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
     return subprocess.Popen(cmd, **kwargs)
 
-# ─── Routes ───────────────────────────────────────────────────────────────────
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -84,7 +78,6 @@ def compiler():
 def health():
     return jsonify({"status": "ok"})
 
-# ─── Socket.IO Events ─────────────────────────────────────────────────────────
 @socketio.on("connect")
 def on_connect():
     pass
@@ -96,7 +89,7 @@ def on_disconnect():
 @socketio.on("run_code")
 def on_run_code(data):
     sid = request.sid
-    _kill_session(sid)          # kill any previous run
+    _kill_session(sid)
 
     run_id  = uuid.uuid4().hex
     sandbox = os.path.join(TEMP_DIR, run_id)
@@ -129,7 +122,6 @@ def on_stop_run():
     _kill_session(sid)
     socketio.emit("run_done", {"exit_code": -1, "stopped": True}, room=sid)
 
-# ─── Execution thread ─────────────────────────────────────────────────────────
 def _emit_sys(sid, text, kind="system"):
     socketio.emit("terminal_output", {"text": text, "kind": kind}, room=sid)
 
@@ -141,7 +133,6 @@ def _execute(sid, data, sandbox, run_id):
 
     proc = None
     try:
-        # Write extra files (multi-file mode)
         if mode == "multi":
             for f in extra_files:
                 nm = os.path.basename(f.get("name", ""))
@@ -149,7 +140,6 @@ def _execute(sid, data, sandbox, run_id):
                     with open(os.path.join(sandbox, nm), "w", encoding="utf-8") as fh:
                         fh.write(f.get("content", ""))
 
-        # ── PYTHON ────────────────────────────────────────────────────────────
         if language == "python":
             fpath = os.path.join(sandbox, "main.py")
             with open(fpath, "w", encoding="utf-8") as fh:
@@ -157,7 +147,6 @@ def _execute(sid, data, sandbox, run_id):
             _emit_sys(sid, "▶ Running Python...\n")
             proc = _popen([get_python_cmd(), "-u", "main.py"], sandbox)
 
-        # ── C ─────────────────────────────────────────────────────────────────
         elif language == "c":
             main_file = os.path.join(sandbox, f"{run_id}.c")
             exe_path  = os.path.join(sandbox, run_id + (".exe" if sys.platform == "win32" else ""))
@@ -183,7 +172,6 @@ def _execute(sid, data, sandbox, run_id):
             _emit_sys(sid, "▶ Running...\n")
             proc = _popen([exe_path], sandbox)
 
-        # ── C++ ───────────────────────────────────────────────────────────────
         elif language == "cpp":
             main_file = os.path.join(sandbox, f"{run_id}.cpp")
             exe_path  = os.path.join(sandbox, run_id + (".exe" if sys.platform == "win32" else ""))
@@ -209,7 +197,6 @@ def _execute(sid, data, sandbox, run_id):
             _emit_sys(sid, "▶ Running...\n")
             proc = _popen([exe_path], sandbox)
 
-        # ── JAVA ──────────────────────────────────────────────────────────────
         elif language == "java":
             class_name = "Main" + run_id[:8]
             main_file  = os.path.join(sandbox, f"{class_name}.java")
@@ -241,14 +228,11 @@ def _execute(sid, data, sandbox, run_id):
             socketio.emit("run_done", {"exit_code": 1}, room=sid)
             return
 
-        # Register active process
         with _lock:
             _active[sid] = {"process": proc, "sandbox": sandbox}
 
-        # Notify frontend: process is alive → show input bar
         socketio.emit("process_alive", {}, room=sid)
 
-        # Stream stdout and stderr char-by-char (preserves prompts without newlines)
         def _read(stream, kind):
             try:
                 while True:
@@ -290,7 +274,6 @@ def _execute(sid, data, sandbox, run_id):
             _active.pop(sid, None)
         _cleanup(sandbox)
 
-# ─── Helpers ──────────────────────────────────────────────────────────────────
 def _kill_session(sid):
     with _lock:
         info = _active.pop(sid, None)
@@ -307,7 +290,6 @@ def _cleanup(path):
     except Exception:
         pass
 
-# ─── Persistent user and history helpers ──────────────────────────────────────
 def _load_json(path, default):
     try:
         if not os.path.exists(path):
@@ -467,7 +449,6 @@ def update_username():
             
     return jsonify({'ok': True, 'username': new_username})
 
-# ─── Main ─────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     print("=" * 52)
     print("  Syntaxia — Interactive Terminal IDE")

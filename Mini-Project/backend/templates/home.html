@@ -56,7 +56,6 @@
     </div>
 </header>
 
-<!-- Profile Dropdown Menu -->
 <div class="profile-dropdown" id="profileDropdown" style="display:none">
     <a href="/compiler" class="dropdown-item">
         <span class="dropdown-icon">💻</span> Open Compiler
@@ -67,7 +66,6 @@
     </button>
 </div>
 
-<!-- Main Dashboard Layout -->
 <main class="dashboard-container" id="dashboardContainer">
     <section class="hero-section">
         <h1 id="welcomeTitle">Welcome to Syntaxia</h1>
@@ -138,14 +136,11 @@
             <a href="/compiler" class="mini-btn">Open Compiler →</a>
         </div>
         <div class="history-grid" id="dashboardHistoryList">
-            <!-- Populated dynamically via JS -->
             <p class="text-muted">Loading your recent code executions...</p>
         </div>
     </section>
 </main>
 
-
-<!-- Code Viewer Modal -->
 <div class="code-viewer-overlay" id="codeViewerOverlay" style="display:none;">
     <div class="code-viewer-modal">
         <div class="code-viewer-header">
@@ -161,7 +156,6 @@
     </div>
 </div>
 
-<!-- Login / Register Modal -->
 <div class="auth-overlay" id="authOverlay" style="display:none;">
     <div class="auth-card">
         <h2 id="authTitle">Sign In</h2>
@@ -177,10 +171,8 @@
     </div>
 </div>
 
-<!-- Toast Notification -->
 <div class="toast" id="toast"></div>
 
-<!-- JS -->
 <script src="{{ url_for('static', filename='home.js') }}"></script>
 </body>
 </html>
